@@ -18,7 +18,7 @@ const defaultUsers: UserPostIF[] = [
     userName: 'trungpham@miraiplay.com',
     name: 'Trung Pham',
     role: 2,
-    password: hashPassword('Trungpham@12345'),
+    password: ('Trungpham@12345'),
     updateAt: new Date(),
     isDeleted: false,
 

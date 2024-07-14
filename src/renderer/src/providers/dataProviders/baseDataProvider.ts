@@ -14,6 +14,8 @@ import type {
   GetManyResult,
   GetOneParams,
   GetOneResult,
+  PaginationPayload,
+  SortPayload,
   UpdateManyParams,
   UpdateManyResult,
   UpdateParams,
@@ -23,31 +25,41 @@ import { fetchUtils } from 'react-admin'
 // import removeEmptyProperties from '@repo/utils/removeEmptyProperties';
 // import { exclude } from '@repo/utils/excludeKey';
 import { GetPutPresignedUrlparams, PutObjectViaPresignedUrlParams } from '@/types/dataProvider'
+import { HEADERS } from '@renderer/consts/header'
+import { pushId } from '@renderer/utils/pushId'
 
-const apiUrl = ` http/local:3000/api/cms`
+const apiUrl = ` http://localhost:3052/v1/api`
 const httpClient = fetchUtils.fetchJson
 
 const baseDataProvider: DataProvider = {
   // get a list of records based on sort, filter, and pagination
   getList: async (resource: string, params: GetListParams): Promise<GetListResult> => {
-    const { page, perPage } = params.pagination
-    const { field, order } = params.sort
-    console.log({ resource })
+    console.log({ params })
+    const { page, perPage } = params.pagination as PaginationPayload
+    const { field, order } = params.sort as SortPayload
     const query = {
       sort: JSON.stringify([field, order]),
       range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
       filter: JSON.stringify(params.filter)
     }
-    const url = `${apiUrl}/${resource}?${JSON.stringify(query)}`
 
-    const {
-      json: { metadata }
-    } = await httpClient(url)
-    console.log('metadata: ', metadata)
+    const requestParams = `sort=${query.sort}&&range=${query.range}&&filter=${query.filter}`
+
+    const url = `${apiUrl}/${resource}?${requestParams}`
+
+    const request = new Request(`${url}`, {
+      method: 'GET',
+      headers: new Headers(HEADERS)
+    })
+    const response = await fetch(request)
+
+    const data = await response.json()
+
+    const resData = pushId(data.metadata)
 
     return {
-      data: metadata,
-      total: parseInt(metadata?.length, 10)
+      data: resData,
+      total: parseInt(data.metadata?.length, 10)
     }
   },
   // get a single record by id

@@ -1,67 +1,48 @@
-import {
-  List,
-  Datagrid,
-  TextField,
-  EditButton,
-  DeleteWithConfirmButton,
-  FunctionField,
-} from 'react-admin';
-// import { ListToolBar } from '@repo/ui/src/components/ListToolBar';
-import { BaseComponentProps } from '../../types/general';
-
-// import { CustomButtonByRoleDelete } from '@repo/ui/src/components/CustomButtonByRoleDelete';
-import { validRole } from '../../core/role/permissions';
-import { useEffect, useState } from 'react';
-// import { CustomButtonByRoleEdit } from '../../components/CustomButtonByRoleEdit';
-import { getClientCookieValue } from '../../utils/cookies';
-import { HEADER } from '../../consts/access';
-import { Role } from '../../types/user';
+import { Datagrid, DeleteWithConfirmButton, EditButton, List, TextField } from 'react-admin'
+import { BaseComponentProps } from '../../types/general'
+import { CustomButtonByRoleDelete } from '@renderer/components/CustomButtonByRoleDelete'
+import { CustomButtonByRoleEdit } from '@renderer/components/CustomButtonByRoleEdit'
+import { ListToolBar } from '@renderer/components/ListToolBar'
+import { validRole } from '../../core/role/permissions'
 
 const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
-  const [userLogin, setUserLogin] = useState({});
+  // const [userLogin, setUserLogin] = useState({});
 
-  const getUserLogin = async () => {
-    try {
-      const userId = getClientCookieValue(HEADER.CLIENT_ID);
-      let getUser = await dataProvider.getOne(resource, { id: userId });
-      setUserLogin({ id: getUser.data.id, role: getUser.data.role });
-    } catch (error) {
-      console.log({ error });
-    }
-  };
+  // const getUserLogin = async () => {
+  //   try {
+  //     const userId = getClientCookieValue(HEADER.CLIENT_ID);
+  //     let getUser = await dataProvider.getOne(resource, { id: userId });
+  //     setUserLogin({ id: getUser.data.id, role: getUser.data.role });
+  //   } catch (error) {
+  //     console.log({ error });
+  //   }
+  // };
 
-  useEffect(() => {
-    getUserLogin();
-  }, []);
+  // useEffect(() => {
+  //   getUserLogin();
+  // }, []);
 
   return (
     <List
       title="管理ユーザー　一覧"
-      // actions={<ListToolBar isShowCreate={validRole('create', actions)} />}
+      actions={<ListToolBar isShowCreate={validRole('create', actions)} />}
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
-        {/* <TextField source="id" label="NO" />
-        <TextField source="userName" label="ユーザー名" /> */}
-        <FunctionField
-          label="権限"
-          render={({ role }: { role: Role }) => {
-            return "duong";
-          }}
-        />
-        {/* <TextField source="name" label="名前" /> */}
-        {/* <EditButton label="編集"></EditButton>
-        <DeleteWithConfirmButton label="削除"></DeleteWithConfirmButton> */}
+        <TextField source="id" label="NO" />
+        <TextField source="name" label="Tên Người Dùng" />
+        <TextField source="email" label="Email" />
+        <TextField source="roles" label="Role" />
 
-        {/* {validRole('delete', actions) && (
+        {validRole('delete', actions) && (
           <CustomButtonByRoleDelete
             source="role"
-            label="削除"
-            userLogin={userLogin}
+            label="Xóa"
+            // userLogin={userLogin}
           >
             <DeleteWithConfirmButton
               confirmContent="よろしいですか?"
               confirmTitle="削除"
-              label="削除"
+              label="Xóa"
               confirmColor="warning"
             ></DeleteWithConfirmButton>
           </CustomButtonByRoleDelete>
@@ -70,15 +51,15 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
         {validRole('edit', actions) && (
           <CustomButtonByRoleEdit
             source="role"
-            label="削除"
-            userLogin={userLogin}
+            label="Chỉnh Sửa"
+            // userLogin={userLogin}
           >
-            <EditButton label="編集"></EditButton>
+            <EditButton label="Edit"></EditButton>
           </CustomButtonByRoleEdit>
-        )} */}
+        )}
       </Datagrid>
     </List>
-  );
-};
+  )
+}
 
-export default UserList;
+export default UserList
