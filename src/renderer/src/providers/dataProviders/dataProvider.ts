@@ -1,11 +1,6 @@
-import { withLifecycleCallbacks } from 'react-admin';
+import { withLifecycleCallbacks } from 'react-admin'
 
-import animalCallbackHandler from './animalCallbackHandlers';
-import baseDataProvider from './baseDataProvider';
-import termsAndConditionsCallbackHandler from './termsAndConditionsCallbackHandlers';
-import userCallbackHandler from './userCallbackHandlers';
-import fakeProvider from './fakeDataProvider';
-import productsCallbackHandler from './productsCallbackHandler';
+import baseDataProvider from './baseDataProvider'
 
 /**
  * NOTE:Limitation of withLifecycleCallbacks
@@ -14,7 +9,7 @@ import productsCallbackHandler from './productsCallbackHandler';
  */
 const dataProvider = withLifecycleCallbacks(baseDataProvider, [
   // userCallbackHandler,
-  productsCallbackHandler,
-]);
+  // productsCallbackHandler,
+])
 
-export default dataProvider;
+export default dataProvider

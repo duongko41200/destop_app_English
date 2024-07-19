@@ -13,10 +13,8 @@ import {
 import { validRole } from '../../core/role/permissions'
 import { BaseComponentProps } from '../../types/general'
 
-const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
+const TextManagerList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
   const [userLogin, setUserLogin] = useState({})
-
-  const [dataTest, setDataTest] = useState('')
   const refresh = useRefresh()
 
   const getUserLogin = async () => {
@@ -30,35 +28,9 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
     }
   }
 
-  const fetchapi = async () => {
-    const PORT = 3333 // Đặt PORT tại đây, ví dụ 3000
-
-    const data = await fetch(`http://localhost:${PORT}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
-        }
-        return response.json() // Đọc và parse dữ liệu JSON nếu API trả về JSON
-      })
-      // .then((data) => {
-      //   console.log('Dữ liệu từ API:', data)
-      //   // Xử lý dữ liệu ở đây
-      // })
-      .catch((error) => {
-        console.error('Lỗi khi gọi API:', error)
-        // Xử lý lỗi ở đây
-      })
-
-    console.log({ data })
-
-    setDataTest(data.data)
-  }
-
   useEffect(() => {
     // getUserLogin()
     // refresh()
-
-    fetchapi()
   }, [])
 
   return (
@@ -68,9 +40,10 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="no" label="NO" />
-        <TextField source="name" label="User" />
-        <TextField source="email" label="Email" />
-        <TextField source="roles" label="Role" />
+        <TextField source="text" label="Câu/từ" />
+        <TextField source="defind" label="Nghĩa" />
+        <TextField source="repeat" label="Level" />
+        <TextField source="dayReview" label="dayReview" />
 
         {validRole('delete', actions) && (
           <CustomButtonByRoleDelete source="role" label="Xóa" userLogin={userLogin}>
@@ -97,4 +70,4 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
   )
 }
 
-export default UserList
+export default TextManagerList

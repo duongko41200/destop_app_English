@@ -22,8 +22,12 @@
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
     "@mdxeditor/editor": "^1.14.3",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "dayjs": "^1.11.12",
+    "express": "^4.19.2",
     "fs-extra": "^11.2.0",
+    "helmet": "^7.1.0",
     "jotai": "^2.6.1",
     "ra-data-json-server": "^5.0.4",
     "react-admin": "^5.0.4"

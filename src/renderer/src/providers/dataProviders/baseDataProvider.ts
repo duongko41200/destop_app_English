@@ -53,26 +53,47 @@ const baseDataProvider: DataProvider = {
     })
     const response = await fetch(request)
 
+    console.log('response.ok', response.ok)
+    if (response.ok === false) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
     const data = await response.json()
+
+    console.log('duong test:', data)
 
     const resData = pushId(data.metadata)
 
     return {
-      data: resData,
+      data: resData.slice((page - 1) * perPage, page * perPage - 1),
       total: parseInt(data.metadata?.length, 10)
     }
   },
   // get a single record by id
   getOne: async (resource: string, params: GetOneParams): Promise<GetOneResult> => {
-    console.log({ params })
+    console.log('param;', params)
     const url = `${apiUrl}/${resource}/${params.id}`
-    const {
-      json: { metadata }
-    } = await httpClient(url)
-    console.log('metadata: ', metadata)
+
+    console.log({ url })
+
+    const request = new Request(`${url}`, {
+      method: 'GET',
+      headers: new Headers(HEADERS)
+    })
+
+    const response = await fetch(request)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    console.log({ data })
+    data.metadata.id = data.metadata._id
+    const resData = data.metadata
 
     return {
-      data: metadata
+      data: resData
     }
   },
   // get a list of records based on an array of ids

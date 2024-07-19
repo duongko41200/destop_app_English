@@ -23,15 +23,12 @@ interface CustomButtonByRoleProps {
  */
 export const CustomButtonByRoleEdit = ({
   children,
-  condition,
-  source,
-  label,
-  userLogin
+
 }: CustomButtonByRoleProps) => {
   const record = useRecordContext()
 
-  let defaultCondition = true
-  let check = true
+  const defaultCondition = true
+  const check = true
 
   // if (
   //   record[source] === ROLE_ACCOUNT['admin'] &&

@@ -1,33 +1,29 @@
-import { Permission, RolesIF } from '@/types/roles';
-import { AuthProvider, DataProvider } from 'react-admin';
+import { Permission, RolesIF } from '@/types/roles'
+import { AuthProvider, DataProvider } from 'react-admin'
 
-export type ReactComponent = ComponentType<any> | ReactElement | undefined;
+export type ReactComponent = ComponentType<any> | ReactElement | undefined
 
-export type ModelDeligate =
-  | UserDeligate
-  | MemoDeligate
-  | ProductDeligate
-  | ProductDetailDeligate;
+export type ModelDeligate = UserDeligate | MemoDeligate | ProductDeligate | ProductDetailDeligate
 
 export interface ResourceIF {
-  list?: ReactComponent;
-  show?: ReactComponent;
-  edit?: ReactComponent;
-  create?: ReactComponent;
-  icon?: ReactComponent;
-  resource: string;
-  defaultProp?: boolean;
-  name?: string;
-  label?: string;
+  list?: ReactComponent
+  show?: ReactComponent
+  edit?: ReactComponent
+  create?: ReactComponent
+  icon?: ReactComponent
+  resource: string
+  defaultProp?: boolean
+  name?: string
+  label?: string
 }
 
 export interface ResourceMapIF {
-  [key: string]: ResourceIF;
+  [key: string]: ResourceIF
 }
 
-type RecordValue = Record<string, any>;
+type RecordValue = Record<string, any>
 
 export interface BaseComponentProps extends RolesIF {
-  dataProvider: DataProvider;
-  authProvider: AuthProvider;
+  dataProvider: DataProvider
+  authProvider: AuthProvider
 }

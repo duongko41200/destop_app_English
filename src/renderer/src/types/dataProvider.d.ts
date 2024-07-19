@@ -1,16 +1,16 @@
 export interface UpdateAnimalClassificationCount {
-  classificationId: number;
-  dataProvider: DataProvider;
-  decrement?: boolean;
+  classificationId: number
+  dataProvider: DataProvider
+  decrement?: boolean
 }
 
 export interface GetPutPresignedUrlparams {
   data: {
-    fileKey: string;
-  };
+    fileKey: string
+  }
 }
 
 export interface PutObjectViaPresignedUrlParams {
-  body: File;
-  type: string;
+  body: File
+  type: string
 }

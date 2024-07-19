@@ -1,9 +1,9 @@
-import { SaveButton, SimpleForm, ValidateForm } from 'react-admin';
-import { SubmitHandler, FieldValues } from 'react-hook-form';
+import { SaveButton, SimpleForm, ValidateForm } from 'react-admin'
+import { SubmitHandler, FieldValues } from 'react-hook-form'
 // import DeleteButtonFlexEnd from './DeleteButtonFlexEnd';
-import { Link } from 'react-router-dom';
-import { Stack, Button } from '@mui/material';
-import { RecordValue } from '@/types/general';
+import { Link } from 'react-router-dom'
+import { Stack, Button } from '@mui/material'
+import { RecordValue } from '@/types/general'
 
 /**
  * Create CustomForm component with delete, save and cancel buttons
@@ -28,15 +28,15 @@ const CustomForm = ({
   validate,
   ...props
 }: {
-  children: JSX.Element | JSX.Element[];
-  handleSave?: SubmitHandler<FieldValues>;
-  showDeleteButton?: boolean;
-  showSaveButton?: boolean;
-  showCancelButton?: boolean;
-  alwaysEnable?:boolean;
-  pathTo: string;
-  validate?: ValidateForm;
-  props?: RecordValue;
+  children: JSX.Element | JSX.Element[]
+  handleSave?: SubmitHandler<FieldValues>
+  showDeleteButton?: boolean
+  showSaveButton?: boolean
+  showCancelButton?: boolean
+  alwaysEnable?: boolean
+  pathTo: string
+  validate?: ValidateForm
+  props?: RecordValue
 }) => {
   return (
     <SimpleForm
@@ -58,7 +58,7 @@ const CustomForm = ({
           backgroundColor: '#f1f1f1',
           padding: '1rem',
           borderRadius: '4px',
-          marginTop: '1rem',
+          marginTop: '1rem'
         }}
         {...props}
       >
@@ -72,7 +72,7 @@ const CustomForm = ({
         ) : null}
       </Stack>
     </SimpleForm>
-  );
-};
+  )
+}
 
-export default CustomForm;
+export default CustomForm

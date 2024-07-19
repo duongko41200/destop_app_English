@@ -1,6 +1,12 @@
 import { Group } from '@mui/icons-material/'
 
 import { UserCreate, UserEdit, UserList, UserShow } from '../..//pages/Users'
+import {
+  TextManagerList,
+  TextManagerCreate,
+  TextManagerEdit,
+  TextManagerShow
+} from '../../pages/TextManager'
 import type { ResourceIF } from '@/types/general'
 
 const Resources: ResourceIF[] = [
@@ -11,7 +17,16 @@ const Resources: ResourceIF[] = [
     show: UserShow,
     icon: Group,
     resource: 'users',
-    label: '管理ユーザ'
+    label: 'User'
+  },
+  {
+    list: TextManagerList,
+    edit: TextManagerEdit,
+    create: TextManagerCreate,
+    show: TextManagerShow,
+    // icon: Group,
+    resource: 'text',
+    label: 'Text'
   }
 ]
 

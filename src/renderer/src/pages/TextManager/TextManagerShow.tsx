@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import { ShowBase, TextInput, Title } from 'react-admin'
 import { boxStyles, disabledInputBackgroundStyle } from '../../styles'
 
-const UserShow = ({  resource }: BaseComponentProps) => {
+const TextManagerShow = ({  resource }: BaseComponentProps) => {
   const resourcePath = `/${resource}`
 
   return (
@@ -72,4 +72,4 @@ const UserShow = ({  resource }: BaseComponentProps) => {
   )
 }
 
-export default UserShow
+export default TextManagerShow

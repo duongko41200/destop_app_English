@@ -5,7 +5,7 @@ import CustomForm from '../../components/CustomForm'
 import { BaseComponentProps } from '../../types/general'
 import { validateUserCreation } from './formValidator'
 
-const UserCreate = ({ actions, resource }: BaseComponentProps) => {
+const UserCreate = ({  resource }: BaseComponentProps) => {
   const resourcePath = `/${resource}`
 
   return (

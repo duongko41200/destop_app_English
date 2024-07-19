@@ -1,34 +1,36 @@
-import { ReactComponent } from '@repo/types/general';
-import { Actions, Permission, RoleCheckingProps } from '@repo/types/roles';
-import { createElement, FunctionComponent } from 'react';
+import { ReactComponent } from '@/types/general'
+import { Actions, Permission, RoleCheckingProps } from '@/types/roles'
+import { createElement, FunctionComponent } from 'react'
 
 const ADMIN: Permission = {
   users: '*',
   products: '*',
   'product-inspection': '*',
   'product-logs': '*',
-};
+  text: '*'
+}
 const EDIT: Permission = {
   users: ['list', 'show', 'edit'],
   products: ['create', 'list', 'show', 'edit', 'delete'],
   'product-inspection': ['create', 'list', 'show', 'edit', 'delete'],
   'product-logs': ['list', 'show', 'edit', 'delete'],
-};
+  text: ['list', 'show', 'edit', 'delete']
+}
 const VIEW: Permission = {
   users: ['list', 'show', 'edit'],
   products: ['list', 'show'],
   'product-inspection': ['list', 'show'],
   'product-logs': ['list', 'show'],
-};
-
+  text: ['list', 'show']
+}
 
 const ROLES_MAP: {
-  [key: string]: Permission;
+  [key: string]: Permission
 } = {
   1: ADMIN,
   2: EDIT,
-  3: VIEW,
-};
+  3: VIEW
+}
 
 /**
  *
@@ -36,8 +38,8 @@ const ROLES_MAP: {
  * @returns actions of pemission
  */
 const generateRole = (role: number) => {
-  return ROLES_MAP[role];
-};
+  return ROLES_MAP[role]
+}
 
 /**
  *
@@ -46,8 +48,8 @@ const generateRole = (role: number) => {
  * @returns boolean role is valid or not
  */
 const validRole = (role: string, actions: Actions): boolean => {
-  return actions === '*' || actions.includes(role);
-};
+  return actions === '*' || actions.includes(role)
+}
 
 /**
  *
@@ -57,21 +59,14 @@ const validRole = (role: string, actions: Actions): boolean => {
  * @param props props to pass to component
  * @returns
  */
-const checkRole = ({
-  actions,
-  action,
-  component,
-  props,
-}: RoleCheckingProps): ReactComponent => {
-  if (!component) return undefined;
+const checkRole = ({ actions, action, component, props }: RoleCheckingProps): ReactComponent => {
+  if (!component) return undefined
 
-  const resComponent = props
-    ? createElement(component as FunctionComponent, props)
-    : component;
+  const resComponent = props ? createElement(component as FunctionComponent, props) : component
 
-  const isRender = validRole(action, actions);
+  const isRender = validRole(action, actions)
 
-  return isRender ? resComponent : undefined;
-};
+  return isRender ? resComponent : undefined
+}
 
-export { generateRole, checkRole, validRole };
+export { checkRole, generateRole, validRole }

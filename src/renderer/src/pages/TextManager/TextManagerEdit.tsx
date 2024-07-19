@@ -9,7 +9,7 @@ import {
   Title
 } from 'react-admin'
 import CustomForm from '../../components/CustomForm'
-import { validateUserEdition } from './formValidator'
+import { validateTextManagerEdition } from './formValidator'
 import { BaseComponentProps, RecordValue } from '../../types/general'
 import { Box } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
@@ -18,8 +18,9 @@ import { useEffect, useState } from 'react'
 import { getClientCookieValue } from '../../utils/cookies'
 import { HEADER } from '../../consts/access'
 import { UPDATED_SUCCESS } from '../../consts/general'
+import { typeText } from '@renderer/consts/text'
 
-const UserEditForm = ({  resource, dataProvider }: BaseComponentProps) => {
+const TextManagerEditForm = ({  resource, dataProvider }: BaseComponentProps) => {
   const resourcePath = `/${resource}`
   const notify = useNotify()
   const navigate = useNavigate()
@@ -74,7 +75,7 @@ const UserEditForm = ({  resource, dataProvider }: BaseComponentProps) => {
         <Title title="ユーザ登録　編集" />
         <CustomForm
           pathTo={resourcePath}
-          validate={validateUserEdition}
+          validate={validateTextManagerEdition}
           showDeleteButton={false}
           showSaveButton={true}
           showCancelButton={true}
@@ -84,7 +85,7 @@ const UserEditForm = ({  resource, dataProvider }: BaseComponentProps) => {
 
           <SelectInput
             source="role"
-            choices={userRoles}
+            choices={typeText}
             isRequired
             label="椎限(*)"
             disabled={!isAdmin}
@@ -102,14 +103,14 @@ const UserEditForm = ({  resource, dataProvider }: BaseComponentProps) => {
   )
 }
 
-const UserEdit = (props: BaseComponentProps) => {
+const TextManagerEdit = (props: BaseComponentProps) => {
   return (
     <Box sx={boxStyles}>
       <EditBase>
-        <UserEditForm {...props} />
+        <TextManagerEditForm {...props} />
       </EditBase>
     </Box>
   )
 }
 
-export default UserEdit
+export default TextManagerEdit

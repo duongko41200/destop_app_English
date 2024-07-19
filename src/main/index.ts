@@ -1,12 +1,21 @@
 import { createNote, deleteNote, getNotes, readNote, writeNote } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
+import child_process from 'child_process'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
   // Create the browser window.
+
+  const defaultWebPreferences = {
+    contentSecurityPolicy: {
+      directives: {
+        'img-src': ['self', 'https://react-admin-telemetry.marmelab.com']
+      }
+    }
+  }
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
@@ -23,9 +32,12 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
-      contextIsolation: true
+      contextIsolation: true,
+      ...defaultWebPreferences
     }
   })
+
+
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -66,6 +78,7 @@ app.whenReady().then(() => {
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
 
   createWindow()
+  child_process.fork(join(__dirname, '../server/server.js'))
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

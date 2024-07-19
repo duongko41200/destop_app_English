@@ -23,10 +23,7 @@ interface CustomButtonByRoleProps {
  */
 export const CustomButtonByRoleDelete = ({
   children,
-  condition,
-  source,
-  label,
-  userLogin
+
 }: CustomButtonByRoleProps) => {
   const record = useRecordContext()
 
