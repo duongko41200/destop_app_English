@@ -9,3 +9,14 @@ export const typeText = [
     name: 'word'
   }
 ]
+
+export const typeName = {
+  sentence:1,
+  word:2
+}
+
+const roleApiDesktopApp = ['text']
+
+export const validUrlApi = (resource: string): boolean => {
+  return roleApiDesktopApp.includes(resource)
+}

@@ -1,6 +1,7 @@
-import { Admin, Resource } from 'react-admin'
+import { Admin, CustomRoutes, Resource } from 'react-admin'
 
 import { Actions, Permission } from '@/types/roles'
+import { Route } from 'react-router-dom'
 import authProvider from '../providers/authProvider'
 import dataProvider from '../providers/dataProviders/dataProvider'
 import { checkRole } from './role/permissions'
@@ -8,6 +9,7 @@ import { checkRole } from './role/permissions'
 // Define resources
 import { ResourceIF } from '@/types/general'
 import Resources from './role/resources'
+import { TextManagerCreate } from '@renderer/pages/TextManager'
 
 // const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
@@ -69,12 +71,8 @@ const App = () => (
 
           {/* <CustomRoutes>
             <Route
-              path="/product-inspection/:id"
-              element={<ProductInspectionEdit permission={permission} />}
-            />
-            <Route
-              path="/registration-learning/:id"
-              element={<RegistrationLearning />}
+              path="/create-text"
+              element={<TextManagerCreate permission={permission} />}
             />
           </CustomRoutes> */}
         </>

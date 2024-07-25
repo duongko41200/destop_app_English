@@ -8,6 +8,8 @@ import { validateUserCreation } from './formValidator'
 const UserCreate = ({  resource }: BaseComponentProps) => {
   const resourcePath = `/${resource}`
 
+  
+
   return (
     <Create redirect="list" title="管理ユーザー管理　新規作成">
       <CustomForm pathTo={resourcePath} validate={validateUserCreation} showDeleteButton={false}>

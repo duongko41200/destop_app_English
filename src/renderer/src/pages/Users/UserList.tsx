@@ -31,14 +31,14 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
   }
 
   const fetchapi = async () => {
-    const PORT = 3333 // Đặt PORT tại đây, ví dụ 3000
+    const PORT = 3052 // Đặt PORT tại đây, ví dụ 3000
 
     const data = await fetch(`http://localhost:${PORT}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
-        return response.json() // Đọc và parse dữ liệu JSON nếu API trả về JSON
+        return response.json()
       })
       // .then((data) => {
       //   console.log('Dữ liệu từ API:', data)
@@ -54,12 +54,12 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
     setDataTest(data.data)
   }
 
-  useEffect(() => {
-    // getUserLogin()
-    // refresh()
+  // useEffect(() => {
+  //   // getUserLogin()
+  //   // refresh()
 
-    fetchapi()
-  }, [])
+  //   fetchapi()
+  // }, [])
 
   return (
     <List

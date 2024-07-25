@@ -7,17 +7,17 @@ export const boxStyles = {
   boxShadow:
     '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
   overflow: 'hidden',
-  marginTop: '1em'
-}
+  marginTop: '1em',
+};
 
 export const disabledInputBackgroundStyle = {
   '& .MuiFilledInput-input': {
-    background: '#f4f4f5c4'
+    background: '#f4f4f5c4',
   },
   '& .Mui-disabled': {
-    WebkitTextFillColor: '#4d4d4d !important'
-  }
-}
+    WebkitTextFillColor: '#4d4d4d !important',
+  },
+};
 
 export const textareaStyles = {
   width: '100%',
@@ -26,16 +26,16 @@ export const textareaStyles = {
   borderRadius: 4,
   background: '#f8f8f8',
   fontSize: 16,
-  overflow: 'auto'
-}
+  overflow: 'auto',
+};
 
 export const imageFieldStyles = {
   '& img': {
     maxWidth: 100,
     maxHeight: 100,
-    objectFit: 'contain'
-  }
-}
+    objectFit: 'contain',
+  },
+};
 
 export const styleBoxCustom = {
   display: 'flex',
@@ -60,29 +60,66 @@ export const styleBoxCustom = {
   borderBottom: '1px solid',
   borderColor: 'light-dark(rgb(118, 118, 118), rgb(133, 133, 133))',
   width: 'fit-content',
-  minWidth: '300px'
-}
+  minWidth: '300px',
+};
 export const smallHelperTextStyle = {
   '& .MuiFormHelperText-root': {
-    lineHeight: '1'
-  }
-}
+    lineHeight: '1',
+    width: 'fit-content !important',
+    display: 'none',
+  },
+};
 
 export const noMarginVertical = {
   '& .MuiTextField-root': {
-    margin: '0px 0px'
-  }
-}
+    margin: '0px 0px',
+  },
+};
 
 export const smallTextInputStyles = {
   '& .MuiOutlinedInput-input': {
     padding: '8px 8px 8px 8px',
     height: '1.2rem',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   '& .MuiInputLabel-root': {
-    fontSize: '0.875rem'
+    fontSize: '0.875rem',
   },
   ...noMarginVertical,
-  ...smallHelperTextStyle
-}
+  ...smallHelperTextStyle,
+};
+
+export const wrapperCenter = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+export const customStyleBox = {
+  backgroundColor: '#fff',
+  marginTop: '20px',
+  color: ' rgba(0, 0, 0, 0.87)',
+  transition: ' box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+  borderRadius: '4px',
+  boxShadow:
+    '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)',
+  width: '100%',
+  overflowY: 'auto',
+};
+
+export const textInputStylesProduct = {
+  '& .MuiOutlinedInput-input': {
+    padding: '8px 8px 8px 8px',
+    height: '1.2rem',
+    backgroundColor: '#fff',
+    width: '100%',
+  },
+  '& .MuiInputLabel-root': {
+    fontSize: '0.875rem',
+  },
+  '& .MuiInputBase-root': {
+    width: 'fit-content !important',
+  },
+  ...noMarginVertical,
+  ...smallHelperTextStyle,
+};

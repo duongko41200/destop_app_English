@@ -38,7 +38,7 @@ const TextManagerList = ({ actions, resource, dataProvider }: BaseComponentProps
       title="管理ユーザー　一覧"
       actions={<ListToolBar isShowCreate={validRole('create', actions)} />}
     >
-      <Datagrid rowClick="show" bulkActionButtons={false}>
+      <Datagrid rowClick="show">
         <TextField source="no" label="NO" />
         <TextField source="text" label="Câu/từ" />
         <TextField source="defind" label="Nghĩa" />
@@ -59,7 +59,7 @@ const TextManagerList = ({ actions, resource, dataProvider }: BaseComponentProps
         {validRole('edit', actions) && (
           <CustomButtonByRoleEdit
             source="role"
-            label="Chỉnh Sửa"
+            label="Edit"
             // userLogin={userLogin}
           >
             <EditButton label="Edit"></EditButton>

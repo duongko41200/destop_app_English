@@ -1,9 +1,9 @@
 import { SaveButton, SimpleForm, ValidateForm } from 'react-admin'
-import { SubmitHandler, FieldValues } from 'react-hook-form'
+import { FieldValues, SubmitHandler } from 'react-hook-form'
 // import DeleteButtonFlexEnd from './DeleteButtonFlexEnd';
-import { Link } from 'react-router-dom'
-import { Stack, Button } from '@mui/material'
 import { RecordValue } from '@/types/general'
+import { Button, Stack } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 /**
  * Create CustomForm component with delete, save and cancel buttons
@@ -44,6 +44,17 @@ const CustomForm = ({
       warnWhenUnsavedChanges={true}
       toolbar={false}
       validate={validate}
+      sx={{
+        backgroundColor: '#fff',
+        marginTop: '20px',
+        color: ' rgba(0, 0, 0, 0.87)',
+        transition: ' box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        borderRadius: '4px',
+        boxShadow:
+          '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)',
+        width: '100%',
+        padding: '10px'
+      }}
     >
       {/* {showDeleteButton ? <DeleteButtonFlexEnd /> : null} */}
 

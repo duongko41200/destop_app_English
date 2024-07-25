@@ -36,16 +36,16 @@ const MAP_ACCEPT_TYPE_FILE: RecordValue = {
   applicationMaster: ['jpg', 'png', 'jpeg', 'html', 'hml', 'assetbundle']
 }
 
-const CREATED_SUCCESS = '作成しました'
-const UPDATED_SUCCESS = '更新しました'
+const CREATED_SUCCESS = 'Tạo Thành Công'
+const UPDATED_SUCCESS = 'Cập Nhập Thành Công'
 
 export {
   baseUploadFolder,
-  REDIRECT_ROUTE,
-  UPLOAD_FOLDER_MAP,
+  CREATED_SUCCESS,
+  MAP_ACCEPT_TYPE_FILE,
   MAP_RESOURE,
   OPERATE_SYSTEM,
-  MAP_ACCEPT_TYPE_FILE,
-  CREATED_SUCCESS,
-  UPDATED_SUCCESS
+  REDIRECT_ROUTE,
+  UPDATED_SUCCESS,
+  UPLOAD_FOLDER_MAP
 }
