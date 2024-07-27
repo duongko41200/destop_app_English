@@ -65,7 +65,7 @@ const baseDataProvider: DataProvider = {
     const resData = pushId(data.metadata)
 
     return {
-      data: resData.slice((page - 1) * perPage, page * perPage - 1),
+      data: resData.slice((page - 1) * perPage, page * perPage ),
       total: parseInt(data.metadata?.length, 10)
     }
   },
