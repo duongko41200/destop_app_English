@@ -41,7 +41,7 @@ const CustomForm = ({
   return (
     <SimpleForm
       onSubmit={handleSave}
-      warnWhenUnsavedChanges={true}
+      // warnWhenUnsavedChanges={true}
       toolbar={false}
       validate={validate}
       sx={{

@@ -541,11 +541,20 @@ video {
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
 .flex {
   display: flex;
 }
 .hidden {
   display: none;
+}
+.border {
+  border-width: 1px;
 }
 .uppercase {
   text-transform: uppercase;

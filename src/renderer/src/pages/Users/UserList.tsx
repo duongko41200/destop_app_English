@@ -64,7 +64,7 @@ const UserList = ({ actions, resource, dataProvider }: BaseComponentProps) => {
   return (
     <List
       title="管理ユーザー　一覧"
-      actions={<ListToolBar isShowCreate={validRole('create', actions)} />}
+      actions={<ListToolBar resource={resource} isShowCreate={validRole('create', actions)} />}
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="no" label="NO" />

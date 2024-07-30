@@ -65,14 +65,14 @@ const baseDataProvider: DataProvider = {
     const resData = pushId(data.metadata)
 
     return {
-      data: resData.slice((page - 1) * perPage, page * perPage ),
+      data: resData.slice((page - 1) * perPage, page * perPage),
       total: parseInt(data.metadata?.length, 10)
     }
   },
   // get a single record by id
   getOne: async (resource: string, params: GetOneParams): Promise<GetOneResult> => {
     console.log('param;', params)
-    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/${params.id}`
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/get-id/${params.id}`
 
     console.log({ url })
 
@@ -132,7 +132,6 @@ const baseDataProvider: DataProvider = {
       headers: new Headers(HEADERS),
       body
     })
-    console.log({ body })
 
     const response = await fetch(request)
 
@@ -174,12 +173,15 @@ const baseDataProvider: DataProvider = {
   update: async (resource: string, params: UpdateParams): Promise<UpdateResult> => {
     const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/${params.id}`
 
-    let body
-    if (params.data instanceof FormData) {
-      body = params.data
-    } else {
-      body = JSON.stringify('tesst')
-    }
+    console.log({ params })
+
+    // let body
+    // if (params.data instanceof FormData) {
+    //   body = params.data
+    // } else {
+    //   body = JSON.stringify('tesst')
+    // }
+    let body = JSON.stringify(params.data)
 
     const response = await httpClient(url, {
       method: 'PUT',
@@ -224,8 +226,7 @@ const baseDataProvider: DataProvider = {
   },
   // delete a record by id
   delete: async (resource: string, params: DeleteParams): Promise<DeleteResult> => {
-
-    console.log('params',params)
+    console.log('params', params)
     const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/${params.id}`
     const response = await httpClient(url, {
       method: 'DELETE'
@@ -243,7 +244,7 @@ const baseDataProvider: DataProvider = {
     const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/batch`
     const body = JSON.stringify(params.ids)
 
-    console.log({body})
+    console.log({ body })
 
     const response = await httpClient(url, {
       method: 'DELETE',
@@ -291,6 +292,48 @@ const baseDataProvider: DataProvider = {
       body
     })
     console.log(':::response', response)
+
+    return {
+      data: response
+    }
+  },
+
+  resetData: async (resource: string) => {
+    console.log({ resource })
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/resetData`
+
+    const request = new Request(`${url}`, {
+      method: 'GET',
+      headers: new Headers(HEADERS)
+    })
+    const response = await fetch(request)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log({ data })
+
+    return {
+      data: response
+    }
+  },
+
+  synchData: async (resource: string) => {
+    console.log({ resource })
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/synch`
+
+    const request = new Request(`${url}`, {
+      method: 'GET',
+      headers: new Headers(HEADERS)
+    })
+    const response = await fetch(request)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log({ data })
 
     return {
       data: response

@@ -1,18 +1,18 @@
 export const typeText = [
   {
-    id: 1,
+    id: '1',
     name: 'sentence'
   },
 
   {
-    id: 2,
+    id: '2',
     name: 'word'
   }
 ]
 
 export const typeName = {
-  sentence:1,
-  word:2
+  sentence: 1,
+  word: 2
 }
 
 const roleApiDesktopApp = ['text']

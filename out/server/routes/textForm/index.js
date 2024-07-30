@@ -23,7 +23,11 @@ router.get('/', (TextFormController.getAllWithQuery));
 router.post('/', (TextFormController.create));
 router.delete('/:id', (TextFormController.deleteById));
 
-router.get('/:id', (TextFormController.getOneById));
+router.get('/get-id/:id', (TextFormController.getOneById));
+router.put('/:id', (TextFormController.updateOneById));
+router.get('/resetData', (TextFormController.resetData));
+router.get('/synch', (TextFormController.synchData));
+
 
 
 module.exports = router;

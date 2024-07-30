@@ -20484,17 +20484,17 @@ var Handler$1 = function() {
 }();
 var handler = Handler$1;
 var globalScope = typeof window === "undefined" ? commonjsGlobal : window;
-function isInstanceOfTypeName(element, typeName) {
-  if (element instanceof globalScope[typeName]) {
+function isInstanceOfTypeName(element, typeName2) {
+  if (element instanceof globalScope[typeName2]) {
     return true;
   }
   switch (typeof element === "undefined" ? "undefined" : _typeof$1(element)) {
     case "string":
-      return typeName === "String";
+      return typeName2 === "String";
     case "boolean":
-      return typeName === "Boolean";
+      return typeName2 === "Boolean";
     case "number":
-      return typeName === "Number";
+      return typeName2 === "Number";
   }
   return false;
 }
@@ -54227,24 +54227,16 @@ var getIntrinsic = function GetIntrinsic(name, allowMissing) {
   }
   return value;
 };
-var esDefineProperty;
-var hasRequiredEsDefineProperty;
-function requireEsDefineProperty() {
-  if (hasRequiredEsDefineProperty)
-    return esDefineProperty;
-  hasRequiredEsDefineProperty = 1;
-  var GetIntrinsic3 = getIntrinsic;
-  var $defineProperty2 = GetIntrinsic3("%Object.defineProperty%", true) || false;
-  if ($defineProperty2) {
-    try {
-      $defineProperty2({}, "a", { value: 1 });
-    } catch (e2) {
-      $defineProperty2 = false;
-    }
+var GetIntrinsic$3 = getIntrinsic;
+var $defineProperty$2 = GetIntrinsic$3("%Object.defineProperty%", true) || false;
+if ($defineProperty$2) {
+  try {
+    $defineProperty$2({}, "a", { value: 1 });
+  } catch (e2) {
+    $defineProperty$2 = false;
   }
-  esDefineProperty = $defineProperty2;
-  return esDefineProperty;
 }
+var esDefineProperty = $defineProperty$2;
 var GetIntrinsic$2 = getIntrinsic;
 var $gOPD = GetIntrinsic$2("%Object.getOwnPropertyDescriptor%", true);
 if ($gOPD) {
@@ -54255,7 +54247,7 @@ if ($gOPD) {
   }
 }
 var gopd$1 = $gOPD;
-var $defineProperty$1 = requireEsDefineProperty();
+var $defineProperty$1 = esDefineProperty;
 var $SyntaxError = syntax;
 var $TypeError$2 = type;
 var gopd = gopd$1;
@@ -54296,7 +54288,7 @@ var defineDataProperty$1 = function defineDataProperty(obj, property2, value) {
     throw new $SyntaxError("This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.");
   }
 };
-var $defineProperty = requireEsDefineProperty();
+var $defineProperty = esDefineProperty;
 var hasPropertyDescriptors = function hasPropertyDescriptors2() {
   return !!$defineProperty;
 };
@@ -54403,7 +54395,7 @@ var setFunctionLength = function setFunctionLength2(fn2, length2) {
   var $apply = GetIntrinsic3("%Function.prototype.apply%");
   var $call = GetIntrinsic3("%Function.prototype.call%");
   var $reflectApply = GetIntrinsic3("%Reflect.apply%", true) || bind3.call($call, $apply);
-  var $defineProperty2 = requireEsDefineProperty();
+  var $defineProperty2 = esDefineProperty;
   var $max = GetIntrinsic3("%Math.max%");
   module.exports = function callBind2(originalFunction) {
     if (typeof originalFunction !== "function") {
@@ -54881,14 +54873,14 @@ const checkRole = ({ actions, action, component, props }) => {
   const isRender = validRole(action, actions);
   return isRender ? resComponent : void 0;
 };
-const apiUrl$1 = `http://localhost:3052/v1/api`;
+const apiUrl = `http://localhost:3052/v1/api`;
 const API_KEY$1 = "4379e3b406e606110a01e8fbe364120fdc58be39a9f30431476dd53ad14b20fe66f52423a3e4546dfa272f4c389822299709414bb44b6b3ffce7f04292be2556";
 const authProvider = {
   // authentication
   login: async (params) => {
     const { username, password } = params;
     try {
-      const request = new Request(`${apiUrl$1}/access/login`, {
+      const request = new Request(`${apiUrl}/access/login`, {
         method: "POST",
         body: JSON.stringify({ email: username, password }),
         headers: new Headers({ "Content-Type": "application/json", "x-api-key": API_KEY$1 })
@@ -54936,6 +54928,24 @@ const HEADERS = {
   "x-client-id": localStorage.getItem("userId"),
   authorization: localStorage.getItem("accessToken")
 };
+const typeText = [
+  {
+    id: "1",
+    name: "sentence"
+  },
+  {
+    id: "2",
+    name: "word"
+  }
+];
+const typeName = {
+  sentence: 1,
+  word: 2
+};
+const roleApiDesktopApp = ["text"];
+const validUrlApi = (resource) => {
+  return roleApiDesktopApp.includes(resource);
+};
 const pushId = (data) => {
   const resData = data.map((value, idx) => {
     value.id = value._id;
@@ -54944,7 +54954,8 @@ const pushId = (data) => {
   });
   return resData;
 };
-const apiUrl = ` http://localhost:3052/v1/api`;
+const apiUrlApp = `http://localhost:3052/v1/api`;
+const apiUrlDesktopApp = `http://localhost:3333/v1/api`;
 const httpClient = fetchJson;
 const baseDataProvider = {
   // get a list of records based on sort, filter, and pagination
@@ -54958,7 +54969,7 @@ const baseDataProvider = {
       filter: JSON.stringify(params.filter)
     };
     const requestParams = `sort=${query.sort}&&range=${query.range}&&filter=${query.filter}`;
-    const url = `${apiUrl}/${resource}?${requestParams}`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}?${requestParams}`;
     const request = new Request(`${url}`, {
       method: "GET",
       headers: new Headers(HEADERS)
@@ -54969,17 +54980,16 @@ const baseDataProvider = {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("duong test:", data);
     const resData = pushId(data.metadata);
     return {
-      data: resData.slice((page - 1) * perPage, page * perPage - 1),
+      data: resData.slice((page - 1) * perPage, page * perPage),
       total: parseInt(data.metadata?.length, 10)
     };
   },
   // get a single record by id
   getOne: async (resource, params) => {
     console.log("param;", params);
-    const url = `${apiUrl}/${resource}/${params.id}`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/get-id/${params.id}`;
     console.log({ url });
     const request = new Request(`${url}`, {
       method: "GET",
@@ -54999,7 +55009,7 @@ const baseDataProvider = {
   },
   // get a list of records based on an array of ids
   getMany: async (resource, params) => {
-    const url = `${apiUrl}/${resource}?id=${params.ids}`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}?id=${params.ids}`;
     const {
       json: { metadata }
     } = await httpClient(url);
@@ -55010,7 +55020,7 @@ const baseDataProvider = {
   // get the records referenced to another record, e.g. comments for a post
   getManyReference: async (resource, params) => {
     const query = JSON.stringify(params);
-    const url = `${apiUrl}/${resource}/refer?${query}`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/refer?${query}`;
     const {
       json: { metadata }
     } = await httpClient(url);
@@ -55018,27 +55028,28 @@ const baseDataProvider = {
   },
   // create a record
   create: async (resource, params) => {
-    const url = `${apiUrl}/${resource}`;
-    let body2;
-    if (params.data instanceof FormData) {
-      body2 = params.data;
-    } else {
-      body2 = JSON.stringify(params.data);
-    }
-    const response = await httpClient(url, {
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}`;
+    let body2 = JSON.stringify(params.data);
+    const request = new Request(`${url}`, {
       method: "POST",
+      headers: new Headers(HEADERS),
       body: body2
     });
-    const {
-      json: { metadata }
-    } = response;
-    console.log(":::metadata", metadata);
+    const response = await fetch(request);
+    console.log("response :", response);
+    if (!response.ok) {
+      console.log("Error");
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log({ data });
+    console.log(":::metadata", data.metadata);
     return {
-      data: metadata
+      data: data.metadata
     };
   },
   createMany: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/batch`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/batch`;
     const body2 = JSON.stringify(params.data);
     const response = await httpClient(url, {
       method: "POST",
@@ -55053,13 +55064,9 @@ const baseDataProvider = {
   },
   // update a record based on a patch
   update: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/${params.id}`;
-    let body2;
-    if (params.data instanceof FormData) {
-      body2 = params.data;
-    } else {
-      body2 = JSON.stringify("tesst");
-    }
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/${params.id}`;
+    console.log({ params });
+    let body2 = JSON.stringify(params.data);
     const response = await httpClient(url, {
       method: "PUT",
       body: body2
@@ -55072,7 +55079,7 @@ const baseDataProvider = {
     };
   },
   getAll: async (resource) => {
-    const url = `${apiUrl}/${resource}/batch`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/batch`;
     const {
       json: { metadata }
     } = await httpClient(url);
@@ -55082,7 +55089,7 @@ const baseDataProvider = {
   },
   // update a list of records based on an array of ids and a common patch
   updateMany: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/batch`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/batch`;
     const body2 = JSON.stringify(params.data);
     const response = await httpClient(url, {
       method: "PUT",
@@ -55097,7 +55104,8 @@ const baseDataProvider = {
   },
   // delete a record by id
   delete: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/${params.id}`;
+    console.log("params", params);
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/${params.id}`;
     const response = await httpClient(url, {
       method: "DELETE"
     });
@@ -55110,8 +55118,9 @@ const baseDataProvider = {
   },
   // delete a list of records based on an array of ids
   deleteMany: async (resource, params) => {
-    const url = `${apiUrl}/${resource}/batch`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/batch`;
     const body2 = JSON.stringify(params.ids);
+    console.log({ body: body2 });
     const response = await httpClient(url, {
       method: "DELETE",
       body: body2
@@ -55126,7 +55135,7 @@ const baseDataProvider = {
   },
   getPutPresignedUrl: async (resource, params) => {
     console.log({ resource, params });
-    const url = `${apiUrl}/${resource}`;
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}`;
     const body2 = JSON.stringify(params.data);
     const response = await httpClient(url, {
       method: "POST",
@@ -55153,9 +55162,43 @@ const baseDataProvider = {
     return {
       data: response
     };
+  },
+  resetData: async (resource) => {
+    console.log({ resource });
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/resetData`;
+    const request = new Request(`${url}`, {
+      method: "GET",
+      headers: new Headers(HEADERS)
+    });
+    const response = await fetch(request);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log({ data });
+    return {
+      data: response
+    };
+  },
+  synchData: async (resource) => {
+    console.log({ resource });
+    const url = `${validUrlApi(resource) ? apiUrlDesktopApp : apiUrlApp}/${resource}/synch`;
+    const request = new Request(`${url}`, {
+      method: "GET",
+      headers: new Headers(HEADERS)
+    });
+    const response = await fetch(request);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log({ data });
+    return {
+      data: response
+    };
   }
   // GetUserLogin: async (resource: string, params: GetPutPresignedUrlparams) => {
-  //   const url = `${apiUrl}/${resource}`;
+  //   const url = `${validUrlApi(resource) ? apiUrlDesktopApp :  apiUrlApp}/${resource}`;
   //   const body = JSON.stringify(params.data);
   //   const response = await httpClient(url, {
   //     method: 'POST',
@@ -55188,58 +55231,105 @@ const CustomButtonByRoleEdit = ({
   useRecordContext();
   return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
 };
-const ListToolBar = ({ isShowCreate }) => /* @__PURE__ */ jsxRuntimeExports.jsx(TopToolbar, { children: isShowCreate && /* @__PURE__ */ jsxRuntimeExports.jsx(CreateButton$1, { label: "新規登録" }) });
+const UPDATED_SUCCESS = "Cập Nhập Thành Công";
+const ListToolBar = ({
+  isShowCreate,
+  resource
+}) => {
+  const notify = useNotify();
+  console.log("resource", resource);
+  const handleReset = async () => {
+    try {
+      const data = await dataProvider.resetData("text", {});
+      console.log("data res", data);
+      await notify(UPDATED_SUCCESS, {
+        type: "success"
+      });
+    } catch (error) {
+      notify("エラー: 生産管理の更新に失敗しました: " + error, {
+        type: "warning"
+      });
+    }
+  };
+  const handleSynch = async () => {
+    try {
+      const data = await dataProvider.synchData("text");
+      console.log("data res", data);
+      await notify(UPDATED_SUCCESS, {
+        type: "success"
+      });
+    } catch (error) {
+      notify("エラー: 生産管理の更新に失敗しました: " + error, {
+        type: "warning"
+      });
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(TopToolbar, { children: [
+    resource && resource == "text" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Button$2,
+        {
+          variant: "text",
+          sx: {
+            "&.MuiButton-root": {
+              lineHeight: "inherit !important",
+              padding: "4px 5px !important"
+            }
+          },
+          onClick: handleSynch,
+          children: "Đồng bộ"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Button$2,
+        {
+          variant: "text",
+          sx: {
+            "&.MuiButton-root": {
+              lineHeight: "inherit !important",
+              padding: "4px 5px !important"
+            }
+          },
+          onClick: handleReset,
+          children: "Reset"
+        }
+      )
+    ] }),
+    isShowCreate && /* @__PURE__ */ jsxRuntimeExports.jsx(CreateButton$1, { label: "新規登録" })
+  ] });
+};
 const UserList = ({ actions, resource, dataProvider: dataProvider2 }) => {
   const [userLogin, setUserLogin] = reactExports.useState({});
-  const [dataTest, setDataTest] = reactExports.useState("");
+  reactExports.useState("");
   useRefresh();
-  const fetchapi = async () => {
-    const PORT = 3333;
-    const data = await fetch(`http://localhost:${PORT}`).then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    }).catch((error) => {
-      console.error("Lỗi khi gọi API:", error);
-    });
-    console.log({ data });
-    setDataTest(data.data);
-  };
-  reactExports.useEffect(() => {
-    fetchapi();
-  }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     List2,
     {
       title: "管理ユーザー　一覧",
-      actions: /* @__PURE__ */ jsxRuntimeExports.jsx(ListToolBar, { isShowCreate: validRole("create", actions) }),
-      children: [
-        dataTest,
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(Datagrid, { rowClick: "show", bulkActionButtons: false, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "no", label: "NO" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "name", label: "User" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "email", label: "Email" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "roles", label: "Role" }),
-          validRole("delete", actions) && /* @__PURE__ */ jsxRuntimeExports.jsx(CustomButtonByRoleDelete, { source: "role", label: "Xóa", userLogin, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-            DeleteWithConfirmButton,
-            {
-              confirmContent: "よろしいですか?",
-              confirmTitle: "削除",
-              label: "Xóa",
-              confirmColor: "warning"
-            }
-          ) }),
-          validRole("edit", actions) && /* @__PURE__ */ jsxRuntimeExports.jsx(
-            CustomButtonByRoleEdit,
-            {
-              source: "role",
-              label: "Chỉnh Sửa",
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx(EditButton, { label: "Edit" })
-            }
-          )
-        ] })
-      ]
+      actions: /* @__PURE__ */ jsxRuntimeExports.jsx(ListToolBar, { resource, isShowCreate: validRole("create", actions) }),
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Datagrid, { rowClick: "show", bulkActionButtons: false, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "no", label: "NO" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "name", label: "User" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "email", label: "Email" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "roles", label: "Role" }),
+        validRole("delete", actions) && /* @__PURE__ */ jsxRuntimeExports.jsx(CustomButtonByRoleDelete, { source: "role", label: "Xóa", userLogin, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          DeleteWithConfirmButton,
+          {
+            confirmContent: "よろしいですか?",
+            confirmTitle: "削除",
+            label: "Xóa",
+            confirmColor: "warning"
+          }
+        ) }),
+        validRole("edit", actions) && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          CustomButtonByRoleEdit,
+          {
+            source: "role",
+            label: "Chỉnh Sửa",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(EditButton, { label: "Edit" })
+          }
+        )
+      ] })
     }
   );
 };
@@ -55287,9 +55377,18 @@ const CustomForm = ({
     SimpleForm,
     {
       onSubmit: handleSave,
-      warnWhenUnsavedChanges: true,
       toolbar: false,
       validate,
+      sx: {
+        backgroundColor: "#fff",
+        marginTop: "20px",
+        color: " rgba(0, 0, 0, 0.87)",
+        transition: " box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+        borderRadius: "4px",
+        boxShadow: "0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)",
+        width: "100%",
+        padding: "10px"
+      },
       children: [
         children,
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -55392,7 +55491,7 @@ const validatePassword = (password) => {
   const regex2 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
   return regex2.test(password);
 };
-const editionRules$1 = [
+const editionRules = [
   // {
   //   field: 'userName',
   //   required: true,
@@ -55410,7 +55509,7 @@ const editionRules$1 = [
     required: true
   }
 ];
-const creationRules$1 = [
+const creationRules = [
   {
     field: "userName",
     required: true,
@@ -55442,8 +55541,8 @@ const creationRules$1 = [
   //   unMatchMessage: 'Password does not match',
   // },
 ];
-const validateUserCreation$1 = (values2) => {
-  const baseValidation = validateForm(values2, creationRules$1);
+const validateUserCreation = (values2) => {
+  const baseValidation = validateForm(values2, creationRules);
   const validPassword = validatePassword(values2.password);
   return validPassword ? baseValidation : {
     ...baseValidation,
@@ -55452,7 +55551,7 @@ const validateUserCreation$1 = (values2) => {
 };
 const validateUserEdition = (values2) => {
   console.log("edit validate", values2);
-  const baseValidation = validateForm(values2, editionRules$1);
+  const baseValidation = validateForm(values2, editionRules);
   const validPassword = values2.newPassword && values2.confirmNewPassword ? validatePassword(values2.newPassword) : true;
   return validPassword ? baseValidation : {
     ...baseValidation,
@@ -55461,7 +55560,7 @@ const validateUserEdition = (values2) => {
 };
 const UserCreate = ({ resource }) => {
   const resourcePath = `/${resource}`;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Create, { redirect: "list", title: "管理ユーザー管理　新規作成", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CustomForm, { pathTo: resourcePath, validate: validateUserCreation$1, showDeleteButton: false, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Create, { redirect: "list", title: "管理ユーザー管理　新規作成", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CustomForm, { pathTo: resourcePath, validate: validateUserCreation, showDeleteButton: false, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", alignItems: "center", columnGap: 20 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "userName", isRequired: true, label: "ユーザー名(*)" }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SelectInput2,
@@ -55510,7 +55609,6 @@ const HEADER = {
   AUTHORIZATION: "authorization",
   REFRESHTOKEN: "x-rtoken-id"
 };
-const UPDATED_SUCCESS = "更新しました";
 const UserEditForm = ({ resource, dataProvider: dataProvider2 }) => {
   const resourcePath = `/${resource}`;
   const notify = useNotify();
@@ -55646,14 +55744,15 @@ const UserShow = ({ resource }) => {
 const TextManagerList = ({ actions, resource, dataProvider: dataProvider2 }) => {
   const [userLogin, setUserLogin] = reactExports.useState({});
   useRefresh();
+  useNotify();
   reactExports.useEffect(() => {
   }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     List2,
     {
       title: "管理ユーザー　一覧",
-      actions: /* @__PURE__ */ jsxRuntimeExports.jsx(ListToolBar, { isShowCreate: validRole("create", actions) }),
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Datagrid, { rowClick: "show", bulkActionButtons: false, children: [
+      actions: /* @__PURE__ */ jsxRuntimeExports.jsx(ListToolBar, { resource, isShowCreate: validRole("create", actions) }),
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Datagrid, { rowClick: "show", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "no", label: "NO" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "text", label: "Câu/từ" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TextField2, { source: "defind", label: "Nghĩa" }),
@@ -55672,7 +55771,7 @@ const TextManagerList = ({ actions, resource, dataProvider: dataProvider2 }) => 
           CustomButtonByRoleEdit,
           {
             source: "role",
-            label: "Chỉnh Sửa",
+            label: "Edit",
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(EditButton, { label: "Edit" })
           }
         )
@@ -55680,140 +55779,172 @@ const TextManagerList = ({ actions, resource, dataProvider: dataProvider2 }) => 
     }
   );
 };
-const typeText = [
-  {
-    id: 1,
-    name: "sentence"
-  },
-  {
-    id: 2,
-    name: "word"
-  }
-];
-const editionRules = [
-  // {
-  //   field: 'userName',
-  //   required: true,
-  //   minLength: userContentLength.userName.min,
-  //   maxLength: userContentLength.userName.max,
-  // },
-  {
-    field: "newPassword",
-    required: false,
-    minLength: userContentLength.newPassword.min,
-    maxLength: userContentLength.newPassword.max
-  },
-  {
-    field: "role",
-    required: true
-  }
-];
-const creationRules = [
-  {
-    field: "userName",
-    required: true,
-    minLength: userContentLength.userName.min,
-    maxLength: userContentLength.userName.max
-  },
-  {
-    field: "name",
-    required: true,
-    minLength: userContentLength.name.min,
-    maxLength: userContentLength.name.max
-  },
-  {
-    field: "role",
-    required: true
-  },
-  {
-    field: "password",
-    required: true,
-    minLength: userContentLength.password.min,
-    maxLength: userContentLength.password.max
-  }
-  // {
-  //   field: 'confirmPassword',
-  //   required: true,
-  //   minLength: userContentLength.password.min,
-  //   maxLength: userContentLength.password.max,
-  //   match: 'password',
-  //   unMatchMessage: 'Password does not match',
-  // },
-];
-const validateUserCreation = (values2) => {
-  const baseValidation = validateForm(values2, creationRules);
-  const validPassword = validatePassword(values2.password);
-  return validPassword ? baseValidation : {
-    ...baseValidation,
-    password: "Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number"
-  };
-};
-const validateTextManagerEdition = (values2) => {
-  console.log("edit validate", values2);
-  const baseValidation = validateForm(values2, editionRules);
-  const validPassword = values2.newPassword && values2.confirmNewPassword ? validatePassword(values2.newPassword) : true;
-  return validPassword ? baseValidation : {
-    ...baseValidation,
-    newPassword: "パスワードには少なくとも 1 つの大文字、1 つの小文字、1 つの数字が含まれている必要があります"
-  };
-};
 const TextManagerCreate = ({ resource }) => {
   const resourcePath = `/${resource}`;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Create, { redirect: "list", title: "管理ユーザー管理　新規作成", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CustomForm, { pathTo: resourcePath, validate: validateUserCreation, showDeleteButton: false, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      SelectInput2,
-      {
-        source: "typeText",
-        choices: typeText,
-        isRequired: true,
-        defaultValue: 2,
-        label: "Loại dạng nhập(*)"
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "text", fullWidth: true, isRequired: true, label: "Nhập text(*)" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "attributes", fullWidth: true, isRequired: true, label: "Nhập Công thức(*)" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "defind", fullWidth: true, isRequired: true, label: "Dịch nghĩa(*)" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      SelectInput2,
-      {
-        source: "typeText",
-        choices: typeText,
-        isRequired: true,
-        defaultValue: 2,
-        label: "Loại dạng nhập(*)"
-      }
-    )
-  ] }) });
+  const [topics, setTopics] = reactExports.useState([]);
+  const [date, setDate] = reactExports.useState(/* @__PURE__ */ new Date());
+  const [statusType, setStatusType] = reactExports.useState(2);
+  const notify = useNotify();
+  const [test2, setTest] = reactExports.useState("");
+  useForm();
+  const onChangeStatusType = (e2) => {
+    setStatusType(e2.target.value);
+  };
+  const handleSave = async (values2) => {
+    console.log(":value form;", values2);
+    if (values2.typeText == typeName["sentence"]) {
+      values2.typeText = "sentence";
+      values2.attributes = {
+        structure: values2.attributes,
+        userId: localStorage.getItem("userId"),
+        // _id: '6601a49510afeea5f4b5fbde',
+        createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+    }
+    if (values2.typeText == typeName["word"]) {
+      values2.typeText = "word";
+      values2.attributes = {
+        spelling: "",
+        audio: "",
+        advan_translation: "",
+        userId: localStorage.getItem("userId"),
+        // _id: '65de0fb43e149b71cf778695',
+        createdAt: "2024-02-27T16:37:08.393Z"
+      };
+    }
+    console.log(":value new;", values2);
+    try {
+      const create = await dataProvider.create("text", { data: values2 });
+      console.log({ create });
+      await notify(UPDATED_SUCCESS, {
+        type: "success"
+      });
+      setTest("duong");
+    } catch (error) {
+      notify("Cảnh báo: " + error, {
+        type: "warning"
+      });
+    }
+  };
+  const getAllTopics = async () => {
+    let topicLocalStorage = [];
+    const url = `http://localhost:3052/v1/api/topic/all`;
+    const request = new Request(`${url}`, {
+      method: "GET",
+      headers: new Headers(HEADERS)
+    });
+    const response = await fetch(request);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    const resMetadata = data.metadata;
+    topicLocalStorage = resMetadata.map((topic) => {
+      topic = {
+        _id: topic._id,
+        id: topic._id,
+        name: topic.name,
+        numberCount: 0,
+        listElement: [],
+        day: date.getDate(),
+        isActive: false
+      };
+      return topic;
+    });
+    localStorage.setItem("topics", JSON.stringify(topicLocalStorage));
+    setTopics(topicLocalStorage);
+  };
+  const getTopic = async () => {
+    const topicLocalStorage = JSON.parse(localStorage.getItem("topics"));
+    if (topicLocalStorage != null) {
+      let topicActive = topicLocalStorage.map((topic) => {
+        topic["isActive"] = false;
+        return topic;
+      });
+      setTopics(topicActive);
+    } else {
+      getAllTopics();
+    }
+  };
+  reactExports.useEffect(() => {
+    getTopic();
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Create, { title: "管理ユーザー管理　新規作成", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    CustomForm,
+    {
+      pathTo: resourcePath,
+      showDeleteButton: false,
+      handleSave,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          SelectInput2,
+          {
+            source: "typeText",
+            choices: typeText,
+            isRequired: true,
+            defaultValue: 2,
+            label: "Loại dạng nhập",
+            onChange: onChangeStatusType
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "text", fullWidth: true, isRequired: true, label: "Nhập text", resettable: true, value: test2 }),
+        typeName[`sentence`] == statusType ? /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "attributes", fullWidth: true, label: "Nhập Công thức", resettable: true }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "defind", fullWidth: true, isRequired: true, label: "Dịch nghĩa", resettable: true }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          SelectInput2,
+          {
+            source: "topicId",
+            choices: topics,
+            isRequired: true,
+            label: "Topic",
+            resettable: true
+          }
+        )
+      ]
+    }
+  ) });
 };
 const TextManagerEditForm = ({ resource, dataProvider: dataProvider2 }) => {
   const resourcePath = `/${resource}`;
   const notify = useNotify();
   const navigate = useNavigate();
   const record = useRecordContext();
-  const [userLogin, setUserLogin] = reactExports.useState({ id: null, role: null });
-  const [isAdmin, setIsAdmin] = reactExports.useState(true);
-  const [isDisableName, setIsDisableName] = reactExports.useState(false);
-  const getUserLogin = async () => {
-    try {
-      const userId = getClientCookieValue(HEADER.CLIENT_ID);
-      const getUser = await dataProvider2.getOne(resource, { id: userId });
-      setUserLogin({ id: getUser.data.id, role: getUser.data.role });
-      const checkRole2 = getUser.data.role === ROLE_ACCOUNT["admin"];
-      const isDisableName2 = getUser.data.role === ROLE_ACCOUNT["view"];
-      console.log({ checkRole: checkRole2, isDisableName: isDisableName2 });
-      setIsAdmin(checkRole2);
-      setIsDisableName(isDisableName2);
-    } catch (error) {
-      console.log({ error });
-    }
-  };
-  reactExports.useEffect(() => {
-    getUserLogin();
-  }, []);
+  const [topics, setTopics] = reactExports.useState([]);
+  const [date, setDate] = reactExports.useState(/* @__PURE__ */ new Date());
+  const [statusType, setStatusType] = reactExports.useState(typeName[record?.typeText]);
+  console.log({ record });
   const handleUpdate = async (values2) => {
+    console.log("value update là;", values2);
+    if (values2.typeId == "2") {
+      values2.typeText = "word";
+      values2.attributes = {
+        spelling: "",
+        audio: "",
+        advan_translation: "",
+        userId: localStorage.getItem("userId"),
+        // _id: '65de0fb43e149b71cf778695',
+        createdAt: values2.attributes.createdAt,
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      delete values2.structure;
+      delete values2.typeId;
+    } else {
+      values2.typeText = "sentence";
+      values2.attributes = {
+        structure: values2.structure,
+        userId: localStorage.getItem("userId"),
+        // _id: '6601a49510afeea5f4b5fbde',
+        createdAt: values2.attributes.createdAt,
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      delete values2?.structure;
+      delete values2.typeId;
+    }
+    console.log("value new:", values2);
     try {
       await dataProvider2.update(resource, {
-        id: record?.id,
+        id: record?._id,
         data: values2,
         previousData: record
       });
@@ -55827,31 +55958,86 @@ const TextManagerEditForm = ({ resource, dataProvider: dataProvider2 }) => {
       });
     }
   };
+  const onChangeStatusType = (e2) => {
+    setStatusType(e2.target.value);
+  };
+  const getAllTopics = async () => {
+    let topicLocalStorage = [];
+    const url = `http://localhost:3052/v1/api/topic/all`;
+    const request = new Request(`${url}`, {
+      method: "GET",
+      headers: new Headers(HEADERS)
+    });
+    const response = await fetch(request);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    const resMetadata = data.metadata;
+    topicLocalStorage = resMetadata.map((topic) => {
+      topic = {
+        _id: topic._id,
+        id: topic._id,
+        name: topic.name,
+        numberCount: 0,
+        listElement: [],
+        day: date.getDate(),
+        isActive: false
+      };
+      return topic;
+    });
+    localStorage.setItem("topics", JSON.stringify(topicLocalStorage));
+    setTopics(topicLocalStorage);
+  };
+  const getTopic = async () => {
+    const topicLocalStorage = JSON.parse(localStorage.getItem("topics"));
+    if (topicLocalStorage != null) {
+      let topicActive = topicLocalStorage.map((topic) => {
+        topic["isActive"] = false;
+        return topic;
+      });
+      setTopics(topicActive);
+    } else {
+      getAllTopics();
+    }
+  };
+  reactExports.useEffect(() => {
+    getTopic();
+  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Box$1, { sx: boxStyles, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(EditBase, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Title, { title: "ユーザ登録　編集" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
       CustomForm,
       {
         pathTo: resourcePath,
-        validate: validateTextManagerEdition,
         showDeleteButton: false,
         showSaveButton: true,
         showCancelButton: true,
         handleSave: handleUpdate,
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "userName", label: "ユーザー名", isRequired: true, fullWidth: true, disabled: true }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             SelectInput2,
             {
-              source: "role",
+              source: "typeId",
               choices: typeText,
               isRequired: true,
-              label: "椎限(*)",
-              disabled: !isAdmin
+              label: "Loại dạng nhập",
+              onChange: onChangeStatusType
             }
           ),
-          userLogin?.role === ROLE_ACCOUNT["admin"] || record?.id === userLogin?.id ? /* @__PURE__ */ jsxRuntimeExports.jsx(PasswordInput, { source: "newPassword", label: "パスワード(*)", fullWidth: true }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "name", label: "名前(*)", fullWidth: true, isRequired: true, disabled: isDisableName })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "text", fullWidth: true, isRequired: true, label: "Nhập text", resettable: true }),
+          typeName[`sentence`] == statusType ? /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "structure", fullWidth: true, label: "Nhập Công thức", resettable: true }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TextInput, { source: "defind", fullWidth: true, isRequired: true, label: "Dịch nghĩa", resettable: true }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            SelectInput2,
+            {
+              source: "topicId",
+              choices: topics,
+              isRequired: true,
+              label: "Topic",
+              resettable: true
+            }
+          )
         ]
       }
     )

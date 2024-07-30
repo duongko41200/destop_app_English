@@ -31,7 +31,7 @@ const TextManagerCreate = ({ resource }: BaseComponentProps) => {
   const handleSave = async (values: FieldValues) => {
     console.log(':value form;', values)
 
-    if (values.typeText === typeName['sentence']) {
+    if (values.typeText == typeName['sentence']) {
       values.typeText = 'sentence'
       values.attributes = {
         structure: values.attributes,
@@ -42,7 +42,7 @@ const TextManagerCreate = ({ resource }: BaseComponentProps) => {
       }
     }
 
-    if (values.typeText === typeName['word']) {
+    if (values.typeText == typeName['word']) {
       values.typeText = 'word'
       values.attributes = {
         spelling: '',
@@ -53,6 +53,7 @@ const TextManagerCreate = ({ resource }: BaseComponentProps) => {
         createdAt: '2024-02-27T16:37:08.393Z'
       }
     }
+    console.log(':value new;', values)
 
     try {
       const create = await dataProvider.create('text', { data: values })

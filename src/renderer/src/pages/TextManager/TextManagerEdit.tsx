@@ -1,59 +1,59 @@
-import { ROLE_ACCOUNT, userRoles } from '../../consts/user'
-import {
-  TextInput,
-  SelectInput,
-  PasswordInput,
-  useNotify,
-  useRecordContext,
-  EditBase,
-  Title
-} from 'react-admin'
-import CustomForm from '../../components/CustomForm'
-import { validateTextManagerEdition } from './formValidator'
-import { BaseComponentProps, RecordValue } from '../../types/general'
 import { Box } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { boxStyles } from '../../styles'
+import { HEADERS } from '@renderer/consts/header'
+import { typeName, typeText } from '@renderer/consts/text'
 import { useEffect, useState } from 'react'
-import { getClientCookieValue } from '../../utils/cookies'
-import { HEADER } from '../../consts/access'
+import { EditBase, SelectInput, TextInput, Title, useNotify, useRecordContext } from 'react-admin'
+import { useNavigate } from 'react-router-dom'
+import CustomForm from '../../components/CustomForm'
 import { UPDATED_SUCCESS } from '../../consts/general'
-import { typeText } from '@renderer/consts/text'
+import { boxStyles } from '../../styles'
+import { BaseComponentProps, RecordValue } from '../../types/general'
 
-const TextManagerEditForm = ({  resource, dataProvider }: BaseComponentProps) => {
+const TextManagerEditForm = ({ resource, dataProvider }: BaseComponentProps) => {
   const resourcePath = `/${resource}`
   const notify = useNotify()
   const navigate = useNavigate()
   const record = useRecordContext()
-  const [userLogin, setUserLogin] = useState({ id: null, role: null })
-  const [isAdmin, setIsAdmin] = useState(true)
-  const [isDisableName, setIsDisableName] = useState(false)
+  const [topics, setTopics] = useState([])
+  const [date, setDate] = useState(new Date())
+  const [statusType, setStatusType] = useState(typeName[record?.typeText])
 
-  const getUserLogin = async () => {
-    try {
-      const userId = getClientCookieValue(HEADER.CLIENT_ID)
-      const getUser = await dataProvider.getOne(resource, { id: userId })
-      setUserLogin({ id: getUser.data.id, role: getUser.data.role })
-
-      const checkRole = getUser.data.role === ROLE_ACCOUNT['admin']
-      const isDisableName = getUser.data.role === ROLE_ACCOUNT['view']
-
-      console.log({ checkRole, isDisableName })
-      setIsAdmin(checkRole)
-      setIsDisableName(isDisableName)
-    } catch (error) {
-      console.log({ error })
-    }
-  }
-
-  useEffect(() => {
-    getUserLogin()
-  }, [])
+  console.log({ record })
 
   const handleUpdate = async (values: RecordValue) => {
+    console.log('value update là;', values)
+
+    if (values.typeId == '2') {
+      values.typeText = 'word'
+      values.attributes = {
+        spelling: '',
+        audio: '',
+        advan_translation: '',
+        userId: localStorage.getItem('userId'),
+        // _id: '65de0fb43e149b71cf778695',
+        createdAt: values.attributes.createdAt,
+        updatedAt: new Date().toISOString()
+      }
+      delete values.structure
+      delete values.typeId
+    } else {
+      values.typeText = 'sentence'
+      values.attributes = {
+        structure: values.structure,
+        userId: localStorage.getItem('userId'),
+        // _id: '6601a49510afeea5f4b5fbde',
+        createdAt: values.attributes.createdAt,
+        updatedAt: new Date().toISOString()
+      }
+      delete values?.structure
+      delete values.typeId
+    }
+
+    console.log('value new:', values)
+
     try {
       await dataProvider.update(resource, {
-        id: record?.id,
+        id: record?._id,
         data: values,
         previousData: record
       })
@@ -68,6 +68,62 @@ const TextManagerEditForm = ({  resource, dataProvider }: BaseComponentProps) =>
       })
     }
   }
+  const onChangeStatusType = (e) => {
+    setStatusType(e.target.value)
+  }
+
+  const getAllTopics = async () => {
+    let topicLocalStorage = []
+    const url = `http://localhost:3052/v1/api/topic/all`
+    const request = new Request(`${url}`, {
+      method: 'GET',
+      headers: new Headers(HEADERS)
+    })
+
+    const response = await fetch(request)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const resMetadata = data.metadata
+
+    topicLocalStorage = resMetadata.map((topic) => {
+      topic = {
+        _id: topic._id,
+        id: topic._id,
+        name: topic.name,
+        numberCount: 0,
+        listElement: [],
+        day: date.getDate(),
+        isActive: false
+      }
+
+      return topic
+    })
+
+    localStorage.setItem('topics', JSON.stringify(topicLocalStorage))
+    setTopics(topicLocalStorage)
+  }
+
+  const getTopic = async () => {
+    const topicLocalStorage = JSON.parse(localStorage.getItem('topics') as any)
+    if (topicLocalStorage != null) {
+      let topicActive = topicLocalStorage.map((topic) => {
+        topic['isActive'] = false
+
+        return topic
+      })
+      setTopics(topicActive)
+    } else {
+      getAllTopics()
+    }
+  }
+
+  useEffect(() => {
+    getTopic()
+  }, [])
 
   return (
     <Box sx={boxStyles}>
@@ -75,28 +131,39 @@ const TextManagerEditForm = ({  resource, dataProvider }: BaseComponentProps) =>
         <Title title="ユーザ登録　編集" />
         <CustomForm
           pathTo={resourcePath}
-          validate={validateTextManagerEdition}
+          // validate={validateTextManagerEdition}
           showDeleteButton={false}
           showSaveButton={true}
           showCancelButton={true}
           handleSave={handleUpdate}
         >
-          <TextInput source="userName" label="ユーザー名" isRequired fullWidth disabled />
-
           <SelectInput
-            source="role"
+            source="typeId"
             choices={typeText}
             isRequired
-            label="椎限(*)"
-            disabled={!isAdmin}
+            // defaultValue={1}
+            label="Loại dạng nhập"
+            onChange={onChangeStatusType}
           />
-          {userLogin?.role === ROLE_ACCOUNT['admin'] || record?.id === userLogin?.id ? (
-            <PasswordInput source="newPassword" label="パスワード(*)" fullWidth />
+
+          <TextInput source="text" fullWidth isRequired label="Nhập text" resettable />
+
+          {typeName[`sentence`] == statusType ? (
+            <TextInput source="structure" fullWidth label="Nhập Công thức" resettable />
           ) : (
             <></>
           )}
 
-          <TextInput source="name" label="名前(*)" fullWidth isRequired disabled={isDisableName} />
+          <TextInput source="defind" fullWidth isRequired label="Dịch nghĩa" resettable />
+
+          <SelectInput
+            source="topicId"
+            choices={topics}
+            isRequired
+            // defaultValue={2}
+            label="Topic"
+            resettable
+          />
         </CustomForm>
       </EditBase>
     </Box>
