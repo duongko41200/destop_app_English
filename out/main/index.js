@@ -4,7 +4,6 @@ const fsExtra = require("fs-extra");
 const os = require("os");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
-const child_process = require("child_process");
 const appDirectoryName = "NoteMark";
 const fileEncoding = "utf8";
 const welcomeNoteFilename = "Welcome.md";
@@ -5576,6 +5575,10 @@ const deleteNote = async (filename) => {
   return true;
 };
 const icon = path.join(__dirname, "../../resources/icon.png");
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 function createWindow() {
   const defaultWebPreferences = {
     contentSecurityPolicy: {
@@ -5617,6 +5620,27 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 }
+const server = express();
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
+server.use(cors());
+server.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      connectSrc: [
+        "'self'",
+        "https://bot-server-english-apiss.vercel.server",
+        "http://localhost:3333"
+      ]
+      // Các directives khác nếu cần
+    }
+  })
+);
+server.use("/", require("../server/routes/index"));
+server.listen(3333, () => {
+  console.log("Server running on http://localhost:3000");
+});
 electron.app.whenReady().then(() => {
   utils.electronApp.setAppUserModelId("com.electron");
   electron.app.on("browser-window-created", (_, window2) => {
@@ -5628,7 +5652,6 @@ electron.app.whenReady().then(() => {
   electron.ipcMain.handle("createNote", (_, ...args) => createNote(...args));
   electron.ipcMain.handle("deleteNote", (_, ...args) => deleteNote(...args));
   createWindow();
-  child_process.fork(path.join(__dirname, "../server/server.js"));
   electron.app.on("activate", function() {
     if (electron.BrowserWindow.getAllWindows().length === 0)
       createWindow();

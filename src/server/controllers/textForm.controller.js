@@ -88,7 +88,13 @@ class TextFormController {
 
 			
 		} catch (error) {
-			return error
+				
+			return res.status(300).json({
+				message: `Error: ${error}`,
+				metadata: [],
+				status:200
+			
+   })
 		}
 
 

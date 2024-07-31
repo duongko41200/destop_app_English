@@ -29,7 +29,7 @@ import { HEADERS } from '@renderer/consts/header'
 import { validUrlApi } from '@renderer/consts/text'
 import { pushId } from '@renderer/utils/pushId'
 
-const apiUrlApp = `http://localhost:3052/v1/api`
+const apiUrlApp = `https://bot-app-english-apiss.vercel.app/v1/api`
 const apiUrlDesktopApp = `http://localhost:3333/v1/api`
 const httpClient = fetchUtils.fetchJson
 

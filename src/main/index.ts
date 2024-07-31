@@ -1,10 +1,14 @@
 import { createNote, deleteNote, getNotes, readNote, writeNote } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
-import child_process from 'child_process'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+const express = require('express')
+const helmet = require('helmet')
+const cors = require('cors')
+// const Redis = require('ioredis')
+const bodyParser = require('body-parser')
 
 function createWindow(): void {
   // Create the browser window.
@@ -37,8 +41,6 @@ function createWindow(): void {
     }
   })
 
-
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -56,6 +58,37 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+const server = express()
+// server.get('/api', (req, res) => {
+//   console.log("kdfjksdjf")
+//   res.status(200).json({
+//     mess: 'ok'
+//   })
+// })
+
+server.use(bodyParser.json()) // Cho phép parse application/json
+server.use(bodyParser.urlencoded({ extended: true }))
+// Định nghĩa các route và middleware của ứng dụng Express
+server.use(cors())
+server.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      connectSrc: [
+        "'self'",
+        'https://bot-server-english-apiss.vercel.server',
+        'http://localhost:3333'
+      ]
+      // Các directives khác nếu cần
+    }
+  })
+)
+
+server.use('/', require('../server/routes/index'))
+server.listen(3333, () => {
+  console.log('Server running on http://localhost:3000')
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -78,7 +111,7 @@ app.whenReady().then(() => {
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
 
   createWindow()
-  child_process.fork(join(__dirname, '../server/server.js'))
+  // child_process.fork(join(__dirname, '../server/server.js'))
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

@@ -74,7 +74,7 @@ const TextManagerEditForm = ({ resource, dataProvider }: BaseComponentProps) => 
 
   const getAllTopics = async () => {
     let topicLocalStorage = []
-    const url = `http://localhost:3052/v1/api/topic/all`
+    const url = `https://bot-app-english-apiss.vercel.app/v1/api/topic/all`
     const request = new Request(`${url}`, {
       method: 'GET',
       headers: new Headers(HEADERS)

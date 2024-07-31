@@ -1,11 +1,11 @@
-import { Create, SelectInput, TextInput, useNotify, useRefresh, useResetStore } from 'react-admin'
+import { Create, SelectInput, TextInput, useNotify } from 'react-admin'
 
 import { UPDATED_SUCCESS } from '@renderer/consts/general'
 import { HEADERS } from '@renderer/consts/header'
 import { typeName, typeText } from '@renderer/consts/text'
 import dataProvider from '@renderer/providers/dataProviders/dataProvider'
 import { useEffect, useState } from 'react'
-import { FieldValues,useForm } from 'react-hook-form'
+import { FieldValues, useForm } from 'react-hook-form'
 import CustomForm from '../../components/CustomForm'
 import { BaseComponentProps } from '../../types/general'
 
@@ -17,10 +17,7 @@ const TextManagerCreate = ({ resource }: BaseComponentProps) => {
   const notify = useNotify()
 
   const [test, setTest] = useState('')
-  const { handleSubmit, reset } = useForm();
-
-
-
+  const { handleSubmit, reset } = useForm()
 
   //logic
 
@@ -72,7 +69,7 @@ const TextManagerCreate = ({ resource }: BaseComponentProps) => {
 
   const getAllTopics = async () => {
     let topicLocalStorage = []
-    const url = `http://localhost:3052/v1/api/topic/all`
+    const url = `https://bot-app-english-apiss.vercel.app/v1/api/topic/all`
     const request = new Request(`${url}`, {
       method: 'GET',
       headers: new Headers(HEADERS)

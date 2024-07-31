@@ -17,7 +17,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", 'http://localhost:3052', 'http://localhost:3333']
+      connectSrc: ["'self'", 'https://bot-app-english-apiss.vercel.app', 'http://localhost:3333']
       // Các directives khác nếu cần
     }
   })
