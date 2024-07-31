@@ -54738,17 +54738,23 @@ const baseDataProvider = {
       method: "GET",
       headers: new Headers(HEADERS)
     });
-    const response = await fetch(request);
-    console.log("response.ok", response.ok);
-    if (response.ok === false) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    try {
+      const response = await fetch(request);
+      console.log("response.ok", response);
+      if (response.ok === false) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      const resData = pushId(data.metadata);
+      console.log({ resData });
+      return {
+        data: resData.slice((page - 1) * perPage, page * perPage),
+        total: parseInt(data.metadata?.length, 10)
+      };
+    } catch (error) {
+      console.log("error: ", error);
+      throw new Error(`HTTP error! Status: ${error}`);
     }
-    const data = await response.json();
-    const resData = pushId(data.metadata);
-    return {
-      data: resData.slice((page - 1) * perPage, page * perPage),
-      total: parseInt(data.metadata?.length, 10)
-    };
   },
   // get a single record by id
   getOne: async (resource, params) => {
@@ -55509,8 +55515,6 @@ const TextManagerList = ({ actions, resource, dataProvider: dataProvider2 }) => 
   const [userLogin, setUserLogin] = reactExports.useState({});
   useRefresh();
   useNotify();
-  reactExports.useEffect(() => {
-  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     List2,
     {

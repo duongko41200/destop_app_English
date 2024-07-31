@@ -56,13 +56,14 @@ const baseDataProvider: DataProvider = {
     const response = await fetch(request)
 
     console.log('response.ok', response.ok)
-    if (response.ok === false) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
+    // if (response.ok === false) {
+    //   throw new Error(`HTTP error! Status: ${response.status}`)
+    // }
 
     const data = await response.json()
 
     const resData = pushId(data.metadata)
+    console.log({resData,data})
 
     return {
       data: resData.slice((page - 1) * perPage, page * perPage),

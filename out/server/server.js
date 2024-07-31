@@ -3,35 +3,35 @@ const { join } = require('path')
 const helmet = require('helmet')
 const cors = require('cors')
 const Redis = require('ioredis');
-const app = express()
+const server = express()
 const PORT = 3333 // Chọn một cổng tự chọn
 const bodyParser = require('body-parser');
 
 
 
-app.use(bodyParser.json()); // Cho phép parse application/json
-app.use(bodyParser.urlencoded({ extended: true }))
+server.use(bodyParser.json()); // Cho phép parse application/json
+server.use(bodyParser.urlencoded({ extended: true }))
 // Định nghĩa các route và middleware của ứng dụng Express
-app.use(cors())
-app.use(
+server.use(cors())
+server.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", 'https://bot-app-english-apiss.vercel.app', 'http://localhost:3333']
+      connectSrc: ["'self'", 'https://bot-server-english-apiss.vercel.server', 'http://localhost:3333']
       // Các directives khác nếu cần
     }
   })
 )
 
 
-app.use('/', require('./routes/index'));
-// app.get('/', (req, res) => {
+server.use('/', require('./routes/index'));
+// server.get('/', (req, res) => {
 //   res.status(200).json({
 //     data: 'ok'
 //   })
 // })
 
-app.get('/test', async(req, res) => {
+server.get('/test', async(req, res) => {
   try {
     // Tạo một client Redis
     const client = new Redis();
@@ -53,6 +53,6 @@ app.get('/test', async(req, res) => {
 })
 
 // Khởi động máy chủ
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
 })

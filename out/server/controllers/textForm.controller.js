@@ -47,15 +47,21 @@ class TextFormController {
 
 		const url = `${URL_API}/text?${requestParams}`
 
+		console.log("ksdjksdjfk",url)
+
 		const dataRedis = await redis.get("Texts")
 
-		if (dataRedis) return res.status(200).json({
-			message: "get  all ss textFrom success!",
-			metadata: JSON.parse(dataRedis),
-			status:200
+		console.log('sdskdlfjkklsdjflsd')
+
+		// if (dataRedis) return res.status(200).json({
+		// 	message: "get  all ss textFrom success!",
+		// 	metadata: JSON.parse(dataRedis),
+		// 	status:200
 		
 		
-		})
+		// })
+
+		
 
 
 		try {
@@ -64,7 +70,7 @@ class TextFormController {
 				method: 'GET',
 				headers: new Headers(HEADERS)
 			  })
-			
+			console.log("header:")
 	
 			const resData = await fetch(request)
 	

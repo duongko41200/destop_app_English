@@ -47,10 +47,7 @@ const TextManagerList = ({ actions, resource, dataProvider }: BaseComponentProps
   //   }
   // }
 
-  useEffect(() => {
-    // getUserLogin()
-    // refresh()
-  }, [])
+
 
   return (
     <List
